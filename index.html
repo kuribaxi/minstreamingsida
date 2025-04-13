@@ -157,7 +157,7 @@
                     { name: "Komala", url: "https://live.tvkomala.com/live/komala/playlist.m3u8" },
                     { name: "GK", url: "https://live.host247.net/gk/gksat/playlist.m3u8" },
                     { name: "IRIB Kurdistan", url: "https://lenz.splus.ir/PLTV/88888888/224/3221226647/index.m3u8" },
-                    { name: "Mahabad", url: "https://telewebion.com/live/mahabad", redirect: true, newTab: true }, // Uppdaterad länk, öppnas i nytt fönster
+                    { name: "Mahabad", url: "https://telewebion.com/live/mahabad", redirect: true, newTab: true },
                     { name: "TRT Kurdi", url: "https://tv-trtkurdi.medya.trt.com.tr/master.m3u8" },
                     { name: "Sahar", url: "https://kurdish.sahartv.ir/live", redirect: true, newTab: true },
                     { name: "Ava TV", url: "https://ava2.site/upload/ava.m3u8" },
@@ -253,8 +253,23 @@
                 mainPlayer.pause();
 
                 if (channel.redirect && channel.newTab) {
-                    console.log("Öppnar i riktigt popup-fönster: " + channel.url);
-                    window.open(channel.url, channel.name, 'width=800,height=450,scrollbars=yes,resizable=yes');
+                    console.log("Öppnar i riktigt popup-fönster med iframe: " + channel.url);
+                    const popup = window.open('', channel.name, 'width=800,height=450,scrollbars=yes,resizable=yes');
+                    popup.document.write(`
+                        <html>
+                            <head>
+                                <title>${channel.name}</title>
+                                <style>
+                                    body { margin: 0; overflow: hidden; }
+                                    iframe { width: 100%; height: 100vh; border: none; }
+                                </style>
+                            </head>
+                            <body>
+                                <iframe src="${channel.url}" allowfullscreen></iframe>
+                            </body>
+                        </html>
+                    `);
+                    popup.document.close();
                 } else {
                     console.log("Spelar upp ström: " + channel.url);
                     videoContainer.style.display = 'block';
